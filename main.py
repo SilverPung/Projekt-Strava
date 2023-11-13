@@ -1,6 +1,17 @@
-from tokens import Tokens
+import pandas as pd
 import requests
+import json
+from tokens import Tokens
 from requests import get
 tokens=Tokens()
-url=f'https://www.strava.com/api/v3/athlete?code=153234943cc8d13cbdcebb2620e0a87b98c5fe86'
-print(get(url).text)
+
+page=1
+while True:
+    url = f'https://www.strava.com/api/v3/activities?access_token={tokens.get_access_token()}&per_page=200&page={page}'
+    requests=get(url).json()
+    if not requests:
+        break
+    for activity in requests:
+        print(activity['name'])
+        
+    page+=1
