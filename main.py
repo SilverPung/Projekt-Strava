@@ -1,8 +1,9 @@
-import pandas as pd
 import requests
 import json
 from tokens import Tokens
 from requests import get
+from database import Connection
+import sqlite3
 tokens=Tokens()
 
 page=1
@@ -11,7 +12,10 @@ while True:
     requests=get(url).json()
     if not requests:
         break
-    for activity in requests:
-        print(activity['name'])
-        
+    with sqlite3.connect("database.db")as connection:
+        connect=Connection(connection)
+        for activity in requests:
+            connect.add_activity(activity["id"],activity["athlete"]["id"],activity["name"],activity["distance"],activity["start_date_local"])
+            #connect.add_activity()
+            
     page+=1
